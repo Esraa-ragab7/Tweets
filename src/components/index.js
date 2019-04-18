@@ -7,3 +7,4 @@ export * from './TextInput';
 export * from './LoadingModal';
 export * from './AppModal';
 export * from './Spinner';
+export * from './Header';
