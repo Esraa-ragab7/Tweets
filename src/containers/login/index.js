@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {View,ImageBackground,Image} from 'react-native';
+import {View,ImageBackground,Image,AsyncStorage} from 'react-native';
 import {TEXTS} from '../../common';
 import styles from './styles';
 import { Button, TextInput, LoadingModal,AppText } from '../../components';
@@ -39,13 +39,33 @@ class Login extends Component{
     }
 
     onLoginSuccess(){
+      var user = firebase.auth().currentUser;
+      this.setState({
+          user_name:'',
+          password:'',
+          error:'',
+          loading:false
+      });
+      firebase.database().ref('/users/' + user.uid).once('value').then((snapshot)=>{
+        var username = (snapshot.val() && snapshot.val().userName) || 'Anonymous';
+        var fname = (snapshot.val() && snapshot.val().fname) || 'Anonymous';
+        var lname = (snapshot.val() && snapshot.val().lname) || 'Anonymous';
+        const user_data = {
+          fname: fname,
+          userName: username,
+          lname : lname
+        }
+        setTimeout( () => {
+          AsyncStorage.setItem('user',JSON.stringify(user_data)).then(() => {
+            this.props.navigation.navigate('HomeScreen');
+          })
+        },500)
+      }).catch((error)=>{
         this.setState({
-            email:'',
-            password:'',
-            error:'',
-            loading:false
+           error: error.message ,
+           loading:false
         });
-        this.props.navigation.navigate('HomeScreen');
+      });
     }
 
     onLoginFail(){
@@ -78,6 +98,7 @@ class Login extends Component{
                       onChangeText={ (user_name)=> this.setState({user_name})  }
                       style={styles.textInputStyle}
                       inputStyle={{color: 'white'}}
+                      keyboardType='email-address'
                   />
                   <TextInput
                       placeholder = {TEXTS.password}

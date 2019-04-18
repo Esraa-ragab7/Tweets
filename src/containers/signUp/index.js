@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {View,ImageBackground,Image} from 'react-native';
+import {View,ImageBackground,Image,AsyncStorage} from 'react-native';
 import {TEXTS} from '../../common';
 import styles from './styles';
 import { Button, TextInput, LoadingModal,AppText } from '../../components';
@@ -55,20 +55,35 @@ class SignUp extends Component{
 
     onSignUpSuccess(){
         this.setState({
-            email:'',
-            password:'',
-            error:'',
-            loading:false
+          loading:false
         });
-        var user = firebase.auth().currentUser;
-        const {userName,firstName,lastName} = this.state;
-        firebase.database().ref('users/' + user.uid).set({
-          fname: firstName,
-          userName: userName,
-          lname : lastName
-        });
-        this.displaySnackbar(TEXTS.createNewAccountSuccessfully)
-        this.props.navigation.navigate('HomeScreen');
+this.displaySnackbar(TEXTS.createNewAccountSuccessfully)
+        setTimeout( () => {
+          const {userName,firstName,lastName} = this.state;
+          const user_data = {
+            fname: firstName,
+            userName: userName,
+            lname : lastName
+          }
+          this.setState({
+              firstName: '',
+              lastName: '',
+              userName:'',
+              password:'',
+              error:'',
+              confirmPassword: ''
+           });
+          AsyncStorage.setItem('user',JSON.stringify(user_data)).then(() => {
+            var user = firebase.auth().currentUser;
+            firebase.database().ref('users/' + user.uid).set({
+              fname: firstName,
+              userName: userName,
+              lname : lastName
+            });
+
+            this.props.navigation.navigate('HomeScreen');
+          })
+        },500)
     }
 
     equalPasswords = (first,second) => {
@@ -165,6 +180,7 @@ class SignUp extends Component{
                       onChangeText={ (userName)=> this.setState({userName})  }
                       style={styles.textInputStyle}
                       inputStyle={{color: 'white'}}
+                      keyboardType='email-address'
                   />
                   <TextInput
                       placeholder = {TEXTS.password}

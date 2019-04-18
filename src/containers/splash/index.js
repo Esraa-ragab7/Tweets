@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import { Image, ImageBackground, StyleSheet, Text } from 'react-native'
-import { AsyncStorage } from 'react-native';
+import { Image, ImageBackground, StyleSheet, Text, AsyncStorage } from 'react-native'
 import {TEXTS,COLORS} from '../../common';
 import firebase from '../../firebase';
 
@@ -11,15 +10,19 @@ class SplashScene extends Component {
   }
 
   componentDidMount(){
-    firebase.auth().onAuthStateChanged((user) => {
-      setTimeout( () => {
-        if(user) {
-          this.props.navigation.navigate('HomeScreen');
-        } else {
-          this.props.navigation.navigate('LoginScreen');
-        }
-      },1000);
-    });
+    // firebase.auth().onAuthStateChanged((user) => {
+    AsyncStorage.getItem('user')
+      .then(user => {
+
+            setTimeout( () => {
+              if(user) {
+                this.props.navigation.navigate('HomeScreen');
+              } else {
+                this.props.navigation.navigate('LoginScreen');
+              }
+            },2000);
+      })
+    // });
   }
 
   render() {
