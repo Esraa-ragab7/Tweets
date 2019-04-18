@@ -4,6 +4,7 @@ import {TEXTS} from '../../common';
 import styles from './styles';
 import { Button, TextInput, LoadingModal,AppText } from '../../components';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import firebase from '../../firebase';
 
 class Login extends Component{
 
@@ -11,12 +12,11 @@ class Login extends Component{
         super(props);
 
         this.state = {
-            email:'',
+            user_name:'',
             password:'',
             error:'',
             loading:false
-    };
-
+        };
     }
 
     static navigationOptions = ({navigation})=>{
@@ -25,19 +25,18 @@ class Login extends Component{
         }
     }
 
-
     onPressLogin(){
+      const {user_name,password} = this.state;
+      this.setState({error:'',loading:true});
 
-        const {email,password} = this.state;
-        this.setState({error:'',loading:true});
-
-        if(email.length == 0 || password.length == 0){
-            this.setState({loading : false, error : TEXTS.error})
-        }else{
-
-        }
+      if(user_name.length == 0 || password.length == 0){
+          this.setState({loading : false, error : TEXTS.error})
+      }else{
+          firebase.auth().signInWithEmailAndPassword(user_name,password)
+          .then( this.onLoginSuccess.bind(this))
+              .catch( this.onLoginFail.bind(this))
+      }
     }
-
 
     onLoginSuccess(){
         this.setState({
@@ -55,6 +54,11 @@ class Login extends Component{
            loading:false
         });
     }
+
+    onPressSignUp(){
+      this.props.navigation.navigate('SignUpScreen');
+    }
+
     render(){
         const {navigate} = this.props.navigation;
         return(
@@ -64,14 +68,14 @@ class Login extends Component{
           >
             <KeyboardAwareScrollView>
               <View style={[styles.container,styles.logoStyle]}>
-                <Image resizeMode={'center'} style={{flex: 1, alignSelf: 'center'}}
+                <Image resizeMode={'contain'} style={styles.logoImageStyle}
                   source={require('../../images/logo.png')}/>
               </View>
               <View style={styles.container} >
                   <TextInput
-                      placeholder = {TEXTS.email}
-                      value = {this.state.email}
-                      onChangeText={ (email)=> this.setState({email})  }
+                      placeholder = {TEXTS.userName}
+                      value = {this.state.user_name}
+                      onChangeText={ (user_name)=> this.setState({user_name})  }
                       style={styles.textInputStyle}
                       inputStyle={{color: 'white'}}
                   />
@@ -85,14 +89,14 @@ class Login extends Component{
                   />
                   <Button
                       title={TEXTS.login}
-                      onPress= { ()=> this.onPressLogin() }
+                      onPress= { this.onPressLogin.bind(this) }
                       disabled={false}
                       style={styles.loginButton}
                       titleSize={22}
                   />
                   <Button
                       title={TEXTS.signUp}
-                      onPress= { ()=> this.onPressLogin() }
+                      onPress= { ()=> this.onPressSignUp() }
                       disabled={false}
                       style={styles.loginButton}
                       titleSize={22}
