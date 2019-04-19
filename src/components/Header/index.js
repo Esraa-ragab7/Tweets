@@ -22,7 +22,7 @@ class Header extends Component {
     } = this.props;
 
     return (
-      <View style={[styles.container,{borderBottomWidth: underline == 1 ? 0 : 5,}]}>
+      <View style={[styles.container]}>
       { menu == false ? null : <TouchableOpacity style={[styles.socialIconView,{ marginLeft: 5,marginRight: 5, justifyContent: 'center', alignItems: 'center',}]} onPress = {() => {
           navigation.openDrawer()
         }
@@ -52,7 +52,7 @@ export {Header};
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: COLORS.main,
+    backgroundColor: COLORS.twiterColor,
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 10,
@@ -84,6 +84,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     color: COLORS.white,
+    fontWeight: 'bold',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo': 'Roboto',
     textAlign: 'center',
     alignSelf: 'center'
   },
