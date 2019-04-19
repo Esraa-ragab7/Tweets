@@ -15,14 +15,15 @@ class CustomField extends Component{
             inputStyle,
             maxLength,
             multiline,
-            returnKeyType
+            returnKeyType,
+            editable
         } = this.props;
-        
+
         return(
             <View style={[styles.container,style ,{ borderBottomColor: error? '#ed1c24' : '#ccc' }]} >
                 { value && value.length > 0 ? <Text style={styles.label} >{placeholder}</Text>: null }
 
-                <TextInput 
+                <TextInput
                     placeholder={placeholder}
                     onChangeText={   onChangeText }
                     value={value || "" }
@@ -37,6 +38,7 @@ class CustomField extends Component{
                     keyboardType={keyboardType || "default"}
                     returnKeyType={ returnKeyType || "default" }
                     onSubmitEditing={ ()=> Keyboard.dismiss()}
+                    editable={editable}
                 />
             </View>
         );
