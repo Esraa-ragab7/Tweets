@@ -1,13 +1,16 @@
 import React from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, ActivityIndicator} from 'react-native';
 import { AppText } from '../AppText';
 import { COLORS } from '../../common';
 
 
-const Button = ({title, style, titleSize, ...rest})=>{
+const Button = ({title, style, titleSize, loading, ...rest})=>{
     return(
         <TouchableOpacity style={[styles.container,style]} {...rest}  >
-            <AppText style={[styles.titleStyle, titleSize? {fontSize: titleSize}: null]} >{title}</AppText>
+            {
+              loading ? <ActivityIndicator size="large" color="white" /> : <AppText style={[styles.titleStyle, titleSize? {fontSize: titleSize}: null]} >{title}</AppText>
+            }
+
         </TouchableOpacity>
     );
 }
