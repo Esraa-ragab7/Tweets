@@ -15,20 +15,15 @@ export default styles = StyleSheet.create({
     },
     itemView:{
       width: "100%",
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingLeft: 30,
-      paddingRight: 30,
-      marginTop: 10,
-      marginBottom: 10
+      padding: 10,
+      paddingLeft: 10,
+      paddingRight: 10,
+      borderBottomWidth: 1,
+      borderBottomColor: 'gray',
     },
     listItem:{
-      width: "100%",
-      borderRadius: 5,
-      borderWidth: 1,
       textAlign: 'center',
-      borderColor: 'black',
-      padding: 10,
+      flexDirection: 'row'
     },
     listView:{
       flex: 1,

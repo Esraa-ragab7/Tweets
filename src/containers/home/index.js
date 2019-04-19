@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {View,Platform,NativeModules,TouchableOpacity,AsyncStorage,FlatList,RefreshControl} from 'react-native';
+import {View,Platform,NativeModules,TouchableOpacity,AsyncStorage,FlatList,RefreshControl,Image} from 'react-native';
 import styles from './styles';
 import { Button, TextInput, LoadingModal, AppText, Header } from '../../components';
 import { TEXTS, COLORS } from '../../common';
@@ -96,13 +96,26 @@ class Home extends Component {
 
     _renderItem = ({item}) => (
       <View style={styles.itemView}>
-        <AppText style={styles.listItem}>{item.text}</AppText>
+        <View style={styles.listItem}>
+          <Image
+            style={{width: 50, height: 50, borderRadius: 25}}
+            source={{uri: Platform.OS === 'ios' ? item.retweeted_status.user.profile_image_url: item.post_profile_image_url}}
+          />
+          <View style={{marginLeft: 10, flex: 1}}>
+            <AppText style={{color: 'black', fontWeight: 'bold', fontSize: 17, }}>{Platform.OS === 'ios' ? item.entities.user_mentions[0].name: item.name}</AppText>
+            <AppText style={{color: 'gray', fontSize: 14, marginBottom: 10}}>@{Platform.OS === 'ios' ? item.entities.user_mentions[0].screen_name: item.screen_name}</AppText>
+            <AppText style={[{textAlign: item.lang == "ar"? 'right': 'left'}]}>{Platform.OS === 'ios' ? item.retweeted_status.text: item.text}</AppText>
+          </View>
+        </View>
       </View>
     );
 
     _keyExtractor = (item, index) => item.id+"";
 
     render(){
+      if(this.state.tweets.length > 0){
+        AsyncStorage.setItem('userImage',Platform.OS === 'ios' ? this.state.tweets[0].user.profile_image_url: this.state.tweets[0].user_profile_image_url)
+      }
         return(
           <View style={[styles.container]}>
             <Header menu={true} search={false} back={false} navigation={this.props.navigation} title={TEXTS.home} date=' '/>
