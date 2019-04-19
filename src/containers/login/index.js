@@ -40,12 +40,7 @@ class Login extends Component{
 
     onLoginSuccess(){
       var user = firebase.auth().currentUser;
-      this.setState({
-          user_name:'',
-          password:'',
-          error:'',
-          loading:false
-      });
+
       firebase.database().ref('/users/' + user.uid).once('value').then((snapshot)=>{
         var username = (snapshot.val() && snapshot.val().userName) || 'Anonymous';
         var fname = (snapshot.val() && snapshot.val().fname) || 'Anonymous';
@@ -55,11 +50,15 @@ class Login extends Component{
           userName: username,
           lname : lname
         }
-        setTimeout( () => {
-          AsyncStorage.setItem('user',JSON.stringify(user_data)).then(() => {
-            this.props.navigation.navigate('HomeScreen');
-          })
-        },300)
+        this.setState({
+            user_name:'',
+            password:'',
+            error:'',
+            loading:false
+        });
+        AsyncStorage.setItem('user',JSON.stringify(user_data)).then(() => {
+          this.props.navigation.navigate('HomeScreen');
+        })
       }).catch((error)=>{
         this.setState({
            error: error.message ,
@@ -99,6 +98,7 @@ class Login extends Component{
                       style={styles.textInputStyle}
                       inputStyle={{color: 'white'}}
                       keyboardType='email-address'
+                      editable={!this.state.loading}
                   />
                   <TextInput
                       placeholder = {TEXTS.password}
@@ -107,6 +107,7 @@ class Login extends Component{
                       style={styles.textInputStyle}
                       secureTextEntry
                       inputStyle={{color: 'white'}}
+                      editable={!this.state.loading}
                   />
                   <Button
                       title={TEXTS.login}
@@ -114,16 +115,15 @@ class Login extends Component{
                       disabled={false}
                       style={styles.loginButton}
                       titleSize={22}
+                      loading={this.state.loading}
                   />
                   <Button
                       title={TEXTS.signUp}
                       onPress= { ()=> this.onPressSignUp() }
-                      disabled={false}
+                      disabled={this.state.loading}
                       style={styles.loginButton}
                       titleSize={22}
                   />
-                  <LoadingModal visible={this.state.loading} />
-
                   <AppText style={styles.errorTextStyle}>{this.state.error}</AppText>
 
               </View>

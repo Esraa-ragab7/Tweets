@@ -54,36 +54,32 @@ class SignUp extends Component{
     }
 
     onSignUpSuccess(){
+        this.displaySnackbar(TEXTS.createNewAccountSuccessfully)
+        const {userName,firstName,lastName} = this.state;
+        const user_data = {
+          fname: firstName,
+          userName: userName,
+          lname : lastName
+        }
         this.setState({
-          loading:false
-        });
-this.displaySnackbar(TEXTS.createNewAccountSuccessfully)
-        setTimeout( () => {
-          const {userName,firstName,lastName} = this.state;
-          const user_data = {
+            firstName: '',
+            lastName: '',
+            userName:'',
+            password:'',
+            error:'',
+            confirmPassword: '',
+            loading:false
+         });
+        AsyncStorage.setItem('user',JSON.stringify(user_data)).then(() => {
+          var user = firebase.auth().currentUser;
+          firebase.database().ref('users/' + user.uid).set({
             fname: firstName,
             userName: userName,
             lname : lastName
-          }
-          this.setState({
-              firstName: '',
-              lastName: '',
-              userName:'',
-              password:'',
-              error:'',
-              confirmPassword: ''
-           });
-          AsyncStorage.setItem('user',JSON.stringify(user_data)).then(() => {
-            var user = firebase.auth().currentUser;
-            firebase.database().ref('users/' + user.uid).set({
-              fname: firstName,
-              userName: userName,
-              lname : lastName
-            });
+          });
 
-            this.props.navigation.navigate('HomeScreen');
-          })
-        },500)
+          this.props.navigation.navigate('HomeScreen');
+        })
     }
 
     equalPasswords = (first,second) => {
@@ -166,6 +162,7 @@ this.displaySnackbar(TEXTS.createNewAccountSuccessfully)
                       onChangeText={ (firstName)=> this.setState({firstName})  }
                       style={styles.textInputStyle}
                       inputStyle={{color: 'white'}}
+                      editable={!this.state.loading}
                   />
                   <TextInput
                       placeholder = {TEXTS.lastName}
@@ -173,6 +170,7 @@ this.displaySnackbar(TEXTS.createNewAccountSuccessfully)
                       onChangeText={ (lastName)=> this.setState({lastName})  }
                       style={styles.textInputStyle}
                       inputStyle={{color: 'white'}}
+                      editable={!this.state.loading}
                   />
                   <TextInput
                       placeholder = {TEXTS.userName}
@@ -181,6 +179,7 @@ this.displaySnackbar(TEXTS.createNewAccountSuccessfully)
                       style={styles.textInputStyle}
                       inputStyle={{color: 'white'}}
                       keyboardType='email-address'
+                      editable={!this.state.loading}
                   />
                   <TextInput
                       placeholder = {TEXTS.password}
@@ -189,6 +188,7 @@ this.displaySnackbar(TEXTS.createNewAccountSuccessfully)
                       style={styles.textInputStyle}
                       secureTextEntry
                       inputStyle={{color: 'white'}}
+                      editable={!this.state.loading}
                   />
                   <TextInput
                       placeholder = {TEXTS.confirmPassword}
@@ -197,6 +197,7 @@ this.displaySnackbar(TEXTS.createNewAccountSuccessfully)
                       style={styles.textInputStyle}
                       secureTextEntry
                       inputStyle={{color: 'white'}}
+                      editable={!this.state.loading}
                   />
 
                   <Button
@@ -205,8 +206,8 @@ this.displaySnackbar(TEXTS.createNewAccountSuccessfully)
                       disabled={false}
                       style={styles.loginButton}
                       titleSize={22}
+                      loading={this.state.loading}
                   />
-                  <LoadingModal visible={this.state.loading} />
 
                   <AppText style={styles.errorTextStyle}>{this.state.error}</AppText>
 
