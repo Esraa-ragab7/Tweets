@@ -1,5 +1,5 @@
 import React from 'react'
-import { AsyncStorage, StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, NativeModules } from 'react-native'
+import { AsyncStorage, StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, NativeModules, Platform } from 'react-native'
 import { NavigationActions, StackActions } from 'react-navigation'
 import {TEXTS,COLORS} from '../../common';
 import { Button, TextInput, AppText, Header } from '../../components';
@@ -22,7 +22,8 @@ class Drawer extends React.Component {
           fname: "",
           lname: "",
           userName: ""
-        }
+        },
+        userImage: null
       }
   }
 
@@ -46,18 +47,27 @@ class Drawer extends React.Component {
   }
 
   onSignOutSuccess(){
-    AsyncStorage.multiRemove(['user','user_id'])
+    AsyncStorage.multiRemove(['user','user_id','userImage'])
     this.props.navigation.navigate('LoginScreen');
   }
 
   render() {
+    if(this.state.userImage == null){
+      AsyncStorage.getItem('userImage')
+      .then(userImage => {
+        this.setState({
+          userImage: userImage
+        });
+      })
+    }
+
     const { navigation } = this.props
     return (
       <View style={styles.container}>
         <View style={[styles.logoStyle]}>
           <Image resizeMode={'contain'} style={styles.logoImageStyle}
-            source={require('../../images/logo.png')}/>
-          <AppText style={{marginTop: 20, alignSelf: 'center', fontSize: 20, color: COLORS.white}}>{this.state.user.fname+" "+this.state.user.lname}</AppText>
+            source={this.state.userImage != null ? {uri: this.state.userImage} : require('../../images/logo2.png')}/>
+          <AppText style={{marginTop: 20, alignSelf: 'center', fontSize: 20, color: COLORS.white,fontFamily: Platform.OS === 'ios' ? 'Menlo': 'Roboto',fontWeight: 'bold'}}>{this.state.user.fname+" "+this.state.user.lname}</AppText>
         </View>
         <View style={{flex: 1,marginTop: 10, backgroundColor: 'white'}}>
           <TouchableOpacity onPress = {() => navigation.navigate('MainPageScreen')} style={styles.drawerItem}>
@@ -92,7 +102,7 @@ export default Drawer;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.main,
+    backgroundColor: COLORS.twiterColor,
     paddingTop: 40,
   },
   uglyDrawerItem: {
@@ -109,12 +119,12 @@ const styles = StyleSheet.create({
   userPhoto: {
     width: 150,
     height: 150,
-    borderRadius: 75,
+    borderRadius: Platform.OS === 'ios' ? 75: 0,
     alignSelf: 'center'
   },
   socialIcons: {
     fontSize: 20,
-    color: COLORS.drawerTextColor
+    color: COLORS.twiterColor
   },
   logoStyle:{
     marginTop: 20,
@@ -122,9 +132,12 @@ const styles = StyleSheet.create({
     height: 150
   },
   logoImageStyle:{
-    flex: 1,
+    width: 100,
     height: 100,
-    alignSelf: 'center'
+    alignSelf: 'center',
+    borderWidth: 4,
+    borderColor: 'white',
+    borderRadius: Platform.OS === 'ios' ? 50: 0,
   },
   drawerItem:{
     flexDirection: 'row',
@@ -135,9 +148,11 @@ const styles = StyleSheet.create({
   },
   drawerText:{
     flex:1,
-    color: COLORS.main,
-    fontSize: 20,
-    marginRight: 10
+    color: COLORS.twiterColor,
+    fontSize: 16,
+    marginRight: 10,
+    fontWeight: 'bold',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo': 'Roboto',
   },
   drawerIcon:{
     marginRight: 10,
@@ -146,6 +161,6 @@ const styles = StyleSheet.create({
     height: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    borderColor: COLORS.main
+    borderColor: COLORS.twiterColor
   }
 })

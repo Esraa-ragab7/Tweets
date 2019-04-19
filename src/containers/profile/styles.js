@@ -1,11 +1,9 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet,Platform} from 'react-native';
 import { COLORS } from '../../common';
 
 export default styles = StyleSheet.create({
     container:{
       flex:1,
-      alignItems:'center',
-      justifyContent:'center',
       backgroundColor: 'white'
     },
     textInputStyle:{
@@ -26,20 +24,28 @@ export default styles = StyleSheet.create({
       textAlign:'center'
     },
     logoImageStyle:{
-      flex: 1,
-      alignSelf: 'center'
+      alignSelf: 'center',
+      width: 150,
+      height: 150,
+      borderRadius: Platform.OS === 'ios' ? 75: 0,
+      borderColor: COLORS.white,
+      borderWidth: 4
     },
     all:{
       flex: 1,
     },
     logoStyle:{
-      marginTop: 50,
-      marginBottom: 50,
-      height: 150
+      padding: 20,
+      marginBottom: 20,
+      width: "100%",
+      backgroundColor: COLORS.twiterColor2,
+      textAlign: 'center',
+      justifyContent: 'center'
     },
     textStyle:{
       color: COLORS.main,
       fontSize: 17,
-      marginBottom: 20
+      marginBottom: 20,
+      fontFamily: Platform.OS === 'ios' ? 'Menlo': 'Roboto',
     }
 });
