@@ -59,7 +59,7 @@ class Login extends Component{
           AsyncStorage.setItem('user',JSON.stringify(user_data)).then(() => {
             this.props.navigation.navigate('HomeScreen');
           })
-        },500)
+        },300)
       }).catch((error)=>{
         this.setState({
            error: error.message ,
