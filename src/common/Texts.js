@@ -15,7 +15,7 @@ export const TEXTS =  {
     passwordDescription: "Please insert at least 8 characters with at least one lower case letter.",
     insertOneLowerCaseLetter: "Please Insert at least one lower case letter.",
     insertCorrectName: "Please Insert Your Correct Name.",
-    home: "Home Page",
+    home: "My Tweets",
     profile: "My Profile",
     logOut: "Log-Out"
 }
